@@ -15,7 +15,7 @@
 <noscript>[<a href="HLP000001.html">目次</a>]<br></noscript>
 <h2>Virtual Store</h2>
 Vista以降のOSでは、特に設定を行わずにサクラエディタを単品で起動させると、Virtual Storeが有効になります。
-<em>sakura.exe.manifest</em>を設置することで<a href="javascript:id=hhctrl.TextPopup('User Account Control\nVista以降に実装されたOS保護機能','ＭＳゴシック,11',9,9,-1,-1)">UAC</a>に対応した動作になり、Virtual Storeを無効にできます。<br>
+<code>sakura.exe.manifest</code>を設置することで<a href="javascript:id=hhctrl.TextPopup('User Account Control\nVista以降に実装されたOS保護機能','ＭＳゴシック,11',9,9,-1,-1)">UAC</a>に対応した動作になり、Virtual Storeを無効にできます。<br>
 <br>
 <small>*sakura.exe.manifestの内容は頁末参照</small><br>
 
@@ -36,7 +36,7 @@ Virtual Store有効のままでアプリを使用していると、そのアプ�
 
 <h3>Virtual Storeを無効にする場合の注意事項</h3>
 必ず<a href="HLP000078.html">ユーザー別設定</a>の機能を利用し、設定ファイル(sakura.ini)が非保護フォルダに保存されるようにしてください。
-その際、ユーザー別設定構成ファイル<em>sakura.exe.ini</em>の編集はデスクトップなどの非保護フォルダで行い、編集後のファイルをエクスプローラでコピーしてください。
+その際、ユーザー別設定構成ファイル<code>sakura.exe.ini</code>の編集はデスクトップなどの非保護フォルダで行い、編集後のファイルをエクスプローラでコピーしてください。
 <br>
 既に、<a href="HLP000078.html">ユーザー別設定</a>を適用せずにProgram Filesにインストールして使用している場合はインストール先フォルダ下の設定ファイルやその他のファイルがVirtual Storeに転送されている可能性があります。
 エクスプローラで確認して転送ファイルのほうを優先的に<a href = "HLP000077.html">設定フォルダ</a>にコピーしてください。
@@ -51,10 +51,10 @@ Program Filesではなく、保護対象外のフォルダにインストール�
 フォルダの仮想化されたファイル（Virtual Storeに転送されたファイル）を表示するにはエクスプローラのツールバーに表示される [互換性ファイル]ボタンをクリックします。
 [互換性ファイル]ボタンは、そのフォルダに仮想化されたファイルがある場合にのみ表示されます。<br>
 <br>
-実際のパスは、たとえばProgram Files\sakuraにインストールされているとき、<em>C:\Users\&lt;username&gt;\AppData\Local\Virtual Store\Program Files\sakura</em> が転送先になります。
+実際のパスは、たとえばProgram Files\sakuraにインストールされているとき、<code>C:\Users\&lt;username&gt;\AppData\Local\Virtual Store\Program Files\sakura</code> が転送先になります。
 
 <h2>sakura.exe.manifestの内容</h2>
-以下の内容のファイルをsakura.exeと同じ場所に保存します。<em>sakura.exe.manifest</em>自身がVirtual Storeに入らないように注意してください。<br>
+以下の内容のファイルをsakura.exeと同じ場所に保存します。<code>sakura.exe.manifest</code>自身がVirtual Storeに入らないように注意してください。<br>
 <small>*デスクトップなどの非保護フォルダで編集を済ませてエクスプローラでコピーなど。</small><br>
 <br>
 Visual Styleを有効にし、Virtual Storeを無効(UAC対応)にする例です。
