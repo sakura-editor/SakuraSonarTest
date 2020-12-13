@@ -12,9 +12,10 @@ Sakura-Editor Macro Reference
 	<dt>機能</dt>
 		<dd>指定行ヘジャンプ</dd>
 	<dt>構文</dt>
-		<dd><code>void  S_Jump ( i1 ， i2 )</code>
-		<br><br>
+		<dd><code>void S_Jump ( i1 ， i2 )</code><br><br>
 		<table border = "1" cellspacing = "0" cellpadding = "3" width = "85%">
+
+			<caption><code>S_Jump</code> の引数</caption>
 			<tr><th scope="col">引数</th><th scope="col">型</th><th scope="col">内容</th></tr>
 			<tr><td>i1</td><td>整数数値</td><td>ジャンプ先の行番号を10進数数値で指定する。 </td></tr>
 			<tr><td>i2</td><td>整数数値</td><td>指定行へジャンプ ダイアログの状態を10進数数値で指定する。 </td></tr>
@@ -24,6 +25,7 @@ Sakura-Editor Macro Reference
 		<dd>引数 <code>i2</code> の設定値は次のとおりです。<br><br>
 		それぞれの bit が 0=チェックOFF / 1=チェックON<br>
 		<table border = "1" cellspacing = "0" cellpadding = "3" width = "85%">
+			<caption>引数 <code>i2</code> の設定値</caption>
 			<tr><th scope="col">bit</th><th scope="col">内容</th></tr>
 			<tr><td>0</td><td>0=折り返し単位の行番号 / 1=改行単位の行番号 </td></tr>
 			<tr><td>1</td><td>PL/SQLコンパイルエラー行を処理する <br>0=OFF / 1=ON </td></tr>
