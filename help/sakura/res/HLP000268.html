@@ -475,7 +475,9 @@ str1&nbsp;&nbsp;&nbsp;&nbsp;表示メッセージ<br>
 int1&nbsp;&nbsp;&nbsp;&nbsp;メッセージボックス種別<br>
 &nbsp;&nbsp;&nbsp;&nbsp;以下の値を足したものを指定します。
 <table>
-<tr><td rowspan="7">表示するボタン</td>
+    <caption>メッセージボックス種別</caption>
+    <tr><th scope="col">種類</th><th scope="col">フラグ</th><th scope="col">意味</th></tr>
+    <tr><th scope="rowgroup" rowspan="7">表示するボタン</td>
     <td>0x0</td><td>OK</td></tr>
 <tr><td>0x1</td><td>OK／キャンセル</td></tr>
 <tr><td>0x2</td><td>中止／再試行／無視</td></tr>
@@ -483,17 +485,17 @@ int1&nbsp;&nbsp;&nbsp;&nbsp;メッセージボックス種別<br>
 <tr><td>0x4</td><td>はい／いいえ</td></tr>
 <tr><td>0x5</td><td>再試行／キャンセル</td></tr>
 <tr><td>0x6</td><td>キャンセル／再実行／続行</td></tr>
-<tr><td rowspan="4">アイコン</td>
+    <tr><th scope="rowgroup" rowspan="4">アイコン</td>
     <td>0x10</td><td>エラー</td>
 <tr><td>0x20</td><td>確認</td></tr>
 <tr><td>0x30</td><td>警告</td></tr>
 <tr><td>0x40</td><td>情報</td></tr>
-<tr><td rowspan="4">デフォルトボタン</td>
+    <tr><th scope="rowgroup" rowspan="4">デフォルトボタン</td>
     <td>0x000</td><td>1番目</td></tr>
 <tr><td>0x100</td><td>2番目</td></tr>
 <tr><td>0x200</td><td>3番目</td></tr>
 <tr><td>0x300</td><td>4番目</td></tr>
-<tr><td rowspan="3">モーダル状態</td>
+    <tr><th scope="rowgroup" rowspan="3">モーダル状態</td>
     <td>0x0000</td><td>APPLMODAL</td></tr>
 <tr><td>0x1000</td><td>SYSTEMMODAL</td></tr>
 <tr><td>0x2000</td><td>TASKMODAL</td></tr>
@@ -501,6 +503,8 @@ int1&nbsp;&nbsp;&nbsp;&nbsp;メッセージボックス種別<br>
 <strong>戻り値</strong><br>
 押されたボタンの番号を返します。
 <table>
+    <caption>戻り値</caption>
+    <tr><th scope="col">bit</th><th scope="col">意味</th></tr>
 <tr><td>0x1</td><td>OK</td></tr>
 <tr><td>0x2</td><td>キャンセル</td></tr>
 <tr><td>0x3</td><td>中止</td></tr>
@@ -526,6 +530,8 @@ sakura:2.0.3.0以降<br>
 <strong>解説</strong><br>
 それぞれ以下のMessageBox関数と等価です。
 <table>
+    <caption>MessageBox関数</caption>
+    <tr><th scope="col">関数</th><th scope="col">UI表示仕様</th></tr>
 <tr><td>ErrorMsg</td><td>「エラーアイコン」＋「OKボタン」</td></tr>
 <tr><td>WarnMsg</td><td>「警告アイコン」＋「OKボタン」</td></tr>
 <tr><td>InfoMsg</td><td>「情報アイコン」＋「OKボタン」</td></tr>
