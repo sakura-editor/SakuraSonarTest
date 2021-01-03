@@ -30,7 +30,6 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
     name: MSBuild
@@ -124,3 +123,103 @@ jobs:
       with:
         name: Dev ${{ matrix.platform }} ${{ matrix.config }}
         path: 'sakura-*-Dev.zip'
+
+  sonar:
+    name: SonarCloud
+    runs-on: windows-latest
+
+    env:
+      BUILD_PLATFORM: x64
+      BUILD_CONFIGURATION: Release
+      SONAR_QUBE_VERSION: '4.5.0.2216'
+
+    if: github.event_name != 'pull_request'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup environment variables
+      run: |
+        echo "SONAR_USER_HOME=${{ runner.temp }}\sonar-user-home" >> $env:GITHUB_ENV
+        echo "OUT_DIR=${{ github.workspace }}\$env:BUILD_PLATFORM\$env:BUILD_CONFIGURATION" >> $env:GITHUB_ENV
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Install Build-Wrapper
+      working-directory: ${{ runner.temp }}
+      run: |
+        Invoke-WebRequest -OutFile build-wrapper-win-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-win-x86.zip
+        7z x build-wrapper-win-x86.zip
+
+    - name: Build with Build-Wrapper
+      run: |
+        ${{ runner.temp }}\build-wrapper-win-x86\build-wrapper-win-x86-64.exe --out-dir bw-output MsBuild.exe /p:Platform=$env:BUILD_PLATFORM,Configuration=$env:BUILD_CONFIGURATION /t:ReBuild
+        echo "${{ env.OUT_DIR }}" >> $env:GITHUB_PATH
+
+    - name: Install OpenCppCoverage with XmlExporter
+      working-directory: ${{ runner.temp }}
+      run: |
+        choco install OpenCppCoverage -y
+        Invoke-WebRequest -OutFile XmlExporter-x64.zip https://github.com/berryzplus/XmlExporter/releases/download/v1.0.0/XmlExporter-x64.zip
+        7z e XmlExporter-x64.zip
+        Move-Item -Path XmlExporter.dll -Destination "C:\Program Files\OpenCppCoverage\Plugins\Exporter\xml.dll"
+        echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
+
+    - name: Run Tests
+      shell: cmd
+      run: OpenCppCoverage.exe
+        --export_type xml:tests1-coverage.xml
+        --modules ${{ github.workspace }}\${{ env.BUILD_PLATFORM }}\${{ env.BUILD_CONFIGURATION }}\tests1.exe
+        --sources ${{ github.workspace }}
+        --excluded_sources ${{ github.workspace }}\build
+        --excluded_sources ${{ github.workspace }}\tests
+        --working_dir ${{ github.workspace }}\${{ env.BUILD_PLATFORM }}\${{ env.BUILD_CONFIGURATION }}
+        --cover_children
+        --
+        ${{ github.workspace }}\tests\build\${{ env.BUILD_PLATFORM }}\${{ env.BUILD_CONFIGURATION }}\tests1.exe
+        --gtest_output=xml:tests1-googletest.xml
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Cache SonarResults
+      uses: actions/cache@v2
+      with:
+        path: |
+          ${{ env.SONAR_USER_HOME }}\.sonar\cache
+          ${{ runner.temp }}\sonar-scanner-cache
+        key: sonar-scanner-cache-${{ env.SONAR_QUBE_VERSION }}-${{ github.sha }}
+        restore-keys: sonar-scanner-cache-${{ env.SONAR_QUBE_VERSION }}-
+
+    - name: Install SonarScanner
+      working-directory: ${{ runner.temp }}
+      run: |
+        Invoke-WebRequest -OutFile sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ env.SONAR_QUBE_VERSION }}.zip
+        7z rn sonar-scanner.zip sonar-scanner-${{ env.SONAR_QUBE_VERSION }} sonar-scanner
+        7z x sonar-scanner.zip
+        $ShimGen = "$env:ChocolateyInstall\tools\shimgen.exe"
+        $SonarScanner = "$env:ChocolateyInstall\bin\sonar-scanner.exe"
+        $SonarScannerBat = "${{ runner.temp }}\sonar-scanner\bin\sonar-scanner.bat"
+        Start-Process -FilePath $ShimGen -ArgumentList "-o `"$SonarScanner`" -p `"$SonarScannerBat`"" -Wait
+
+    - name: Analyze with SonarScanner
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      if: env.SONAR_TOKEN
+      run: sonar-scanner.exe
+        -D"sonar.organization=${{ github.repository_owner }}"
+        -D"sonar.projectKey=$('${{ github.repository }}' -replace '/', '_')"
+        -D"sonar.host.url=https://sonarcloud.io"
+        -D"sonar.sourceEncoding=UTF-8"
+        -D"sonar.sources=."
+        -D"sonar.cfamily.build-wrapper-output=bw-output"
+        -D"sonar.cfamily.cache.enabled=true"
+        -D"sonar.cfamily.cache.path=${{ runner.temp }}\sonar-scanner-cache"
+        -D"sonar.cfamily.cppunit.reportPath=tests1-googletest.xml"
+        -D"sonar.cfamily.threads=2"
+        -D"sonar.coverageReportPaths=tests1-coverage.xml"
