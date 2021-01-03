@@ -142,7 +142,6 @@ jobs:
     - name: Setup environment variables
       run: |
         echo "SONAR_USER_HOME=${{ runner.temp }}\sonar-user-home" >> $env:GITHUB_ENV
-        echo "OUT_DIR=${{ github.workspace }}\$env:BUILD_PLATFORM\$env:BUILD_CONFIGURATION" >> $env:GITHUB_ENV
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
@@ -152,13 +151,19 @@ jobs:
       run: |
         Invoke-WebRequest -OutFile build-wrapper-win-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-win-x86.zip
         7z x build-wrapper-win-x86.zip
+        echo "${{ runner.temp }}\build-wrapper-win-x86" >> $env:GITHUB_PATH
 
     - name: Build with Build-Wrapper
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      if: env.SONAR_TOKEN
       run: |
-        ${{ runner.temp }}\build-wrapper-win-x86\build-wrapper-win-x86-64.exe --out-dir bw-output MsBuild.exe /p:Platform=$env:BUILD_PLATFORM,Configuration=$env:BUILD_CONFIGURATION /t:ReBuild
-        echo "${{ env.OUT_DIR }}" >> $env:GITHUB_PATH
+        build-wrapper-win-x86-64.exe --out-dir bw-output MsBuild.exe /p:Platform=$env:BUILD_PLATFORM,Configuration=$env:BUILD_CONFIGURATION /t:ReBuild
 
     - name: Install OpenCppCoverage with XmlExporter
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      if: env.SONAR_TOKEN
       working-directory: ${{ runner.temp }}
       run: |
         choco install OpenCppCoverage -y
@@ -168,6 +173,9 @@ jobs:
         echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
 
     - name: Run Tests
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      if: env.SONAR_TOKEN
       shell: cmd
       run: OpenCppCoverage.exe
         --export_type xml:tests1-coverage.xml
@@ -221,4 +229,7 @@ jobs:
         -D"sonar.cfamily.cppunit.reportPath=tests1-googletest.xml"
         -D"sonar.cfamily.threads=2"
         -D"sonar.coverageReportPaths=tests1-coverage.xml"
-        -D"sonar.exclusions=HeaderMake,tests\googletest\**\*,tests\build\**\*"
+        -D"sonar.exclusions=HeaderMake\**\*"
+        -D"sonar.exclusions=tests\build\**\*"
+        -D"sonar.exclusions=tests\googletest\**\*"
+        -D"sonar.exclusions=**\test-*.cpp"
