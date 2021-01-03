@@ -227,7 +227,5 @@ jobs:
         -D"sonar.cfamily.cache.path=${{ runner.temp }}\sonar-scanner-cache"
         -D"sonar.cfamily.threads=2"
         -D"sonar.coverageReportPaths=tests1-coverage.xml"
-        -D"sonar.exclusions=HeaderMake\**\*"
-        -D"sonar.exclusions=tests\build\**\*"
-        -D"sonar.exclusions=tests\googletest\**\*"
+        -D"sonar.exclusions=HeaderMake\**\*,tests\build\**\*,tests\googletest\**\*"
         -D"sonar.exclusions=**\test-*.cpp"
