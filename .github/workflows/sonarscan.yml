@@ -42,6 +42,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Setup environment variables
       run: |
@@ -136,3 +138,4 @@ jobs:
         -D"sonar.coverage.exclusions=help\**\*.js,tools\**\*.js"
         -D"sonar.coverageReportPaths=tests1-coverage.xml"
         -D"sonar.exclusions=HeaderMake\**\*,tests\build\**\*,tests\googletest\**\*,**\test-*"
+        -D"sonar.log.level=TRACE"
