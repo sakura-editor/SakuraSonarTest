@@ -15,7 +15,7 @@ on:
       - 'azure-pipelines*.yml'
       - 'ci/azure-pipelines/template*.yml'
 
-  pull_request:
+  pull_request_target:
     branches:
       - master
       - feature/*
@@ -122,8 +122,6 @@ jobs:
     - name: Analyze with SonarScanner
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      if: env.SONAR_TOKEN
       run: sonar-scanner.exe
         -D"sonar.organization=${{ github.repository_owner }}"
         -D"sonar.projectKey=$('${{ github.repository }}' -replace '/', '_')"
