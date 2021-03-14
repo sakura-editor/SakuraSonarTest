@@ -673,6 +673,7 @@ void CESI::ScanCode( const char* pS, const int nLen )
 	GetEncodingInfo_utf7( pS, nLen );
 	GetEncodingInfo_cesu8( pS, nLen );
 	GetEncodingInfo_latin1( pS, nLen );
+	GetEncodingInfo_auto( pS, nLen );
 	GetEncodingInfo_uni( pS, nLen );
 	SortMBCInfo();
 
