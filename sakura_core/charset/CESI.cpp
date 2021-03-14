@@ -506,6 +506,15 @@ void CESI::GetEncodingInfo_latin1( const char* pS, const int nLen )
 	return;
 }
 
+/*!
+	SonarCloudが呼出元の変更を補足してfalse positiveを再評価できるか確認するためのバグコード。
+*/
+void CESI::GetEncodingInfo_auto( const char* pS, const int nLen )
+{
+	SetEvaluation( CODE_AUTODETECT, 0, - nLen );
+	return;
+}
+
 void CESI::GetEncodingInfo_meta( const char* pS, const int nLen )
 {
 	// XML宣言は先頭にあるので、最初にチェック
